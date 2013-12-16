@@ -1,5 +1,5 @@
 # cryomech test code
-
+import sys
 import serial
 import struct as st
 
@@ -11,8 +11,8 @@ def main():
        # print 'Example usage: python cryomech_test.py "/dev/tty.usbmodem411"'
        # exit(1)
  
-    strPort = 'COM11'
-    #strPort = sys.argv[1];
+    #strPort = 'COM11'
+    strPort = sys.argv[1];
     ser = serial.Serial(strPort, 115200, timeout=1)
 	
     hashCode = 0x5f95
@@ -57,7 +57,8 @@ def main():
     ser.write(chr(CKSUM2))
     ser.write('\r')
 	
-    line = ser.readlines()
+    line = ser.readline()
+    print line
     ##print 'about to write line'
     #output = []
     
