@@ -66,6 +66,7 @@ class comppar:
 		
 		#receive response
 		line = sobj.readline()
+		print line
 		#convert to a value
 		lValue = st.unpack_from('>L',(line[7:11]))[0]
 		#lValue = long(line(8:12))
@@ -198,8 +199,8 @@ def postHttpData(parsDict):
 
 def main():
 	signal.signal(signal.SIGINT, handler)
-	compressorSerPort = 'COM16'
-	hemonSerPort = 'COM14'
+	compressorSerPort = '/dev/ttyUSB1'
+	hemonSerPort = '/dev/ttyUSB0'
 	print('query helium\n')
 	he = heliummonitor(hemonSerPort) 
 	he.updateStatus()
