@@ -100,7 +100,7 @@ class compressor:
 		
 		self.ser = serial.Serial(serStr, 115200,timeout=1) #set timeout to 5 seconds
 		self.parIndex = {}
-		self.channels = ['temp', 'pressure', 'status']
+		self.channels = ['status', 'pressure', 'temp']
 		self.parIndex['temp'] = [1,2,3,4]
 		self.parIndex['pressure'] = [6,7]
 		self.parIndex['status'] = [0,5,8,9]
