@@ -7,16 +7,18 @@ import struct as st
 
 
 def main():
-    #if(len(sys.argv) != 2):
-       # print 'Example usage: python cryomech_test.py "/dev/tty.usbmodem411"'
-       # exit(1)
+    if(len(sys.argv) != 4):
+    	print 'Example usage: python cryomech_read.py /dev/ttyUSB1 0x0d8f 0'
+    	exit(1)
  
     #strPort = 'COM11'
-    strPort = sys.argv[1];
+    strPort = sys.argv[1]
+    hashCode = int(sys.argv[2],16)
+    index = int(sys.argv[3])
     ser = serial.Serial(strPort, 115200, timeout=1)
 	
-    hashCode = 0x0d8f
-    index = 0
+    #hashCode = 0x0d8f
+    #index = 0
 	
     STX = 0x02
     ADDR = 0x10
@@ -45,14 +47,30 @@ def main():
     print CHECKSUM
     print CKSUM1
     print CKSUM2
+
+    
     
     ser.write(chr(STX))
     ser.write(chr(ADDR))
     ser.write(chr(CMD_RSP))
-    ser.write(chr(DATA[0]))
-    ser.write(chr(DATA[1]))
-    ser.write(chr(DATA[2]))
-    ser.write(chr(DATA[3]))
+    
+    for d in DATA:
+	if d == 0x02:
+		ser.write(chr(0x07))
+		ser.write(chr(0x30))
+	elif d == 0x0d:
+		ser.write(chr(0x07))
+		ser.write(chr(0x31))
+	elif d == 0x07:
+		ser.write(chr(0x07))
+		ser.write(chr(0x32))
+	else:
+		ser.write(chr(d))
+
+    #ser.write(chr(DATA[0]))
+    #ser.write(chr(DATA[1]))
+    #ser.write(chr(DATA[2]))
+    #ser.write(chr(DATA[3]))
     ser.write(chr(CKSUM1))
     ser.write(chr(CKSUM2))
     ser.write('\r')
