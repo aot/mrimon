@@ -48,9 +48,13 @@ class comppar:
 		
 		# Checksum
 		msg = [ADDR , CMD_RSP] + DATA
+		print msg
 		CHECKSUM = sum(msg) & 0xff
-		CKSUM1 = (((CHECKSUM >> 4) & 0xff) + 0x30) #MSB + 0x30
+		CKSUM1 = (((CHECKSUM >> 4) & 0xf) + 0x30) #MSB + 0x30
 		CKSUM2 = ((CHECKSUM & 0xff) + 0x30) #LSB + 0x30
+		print CHECKSUM
+		print CKSUM1
+		print CKSUM2
 		
 		#send request messages
 		sobj.write(chr(STX)) #0

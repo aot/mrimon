@@ -15,7 +15,7 @@ def main():
     strPort = sys.argv[1];
     ser = serial.Serial(strPort, 115200, timeout=1)
 	
-    hashCode = 0x5f95
+    hashCode = 0x0d8f
     index = 0
 	
     STX = 0x02
