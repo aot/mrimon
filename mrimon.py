@@ -32,7 +32,7 @@ class comppar:
 		STX = 0x02
 		ADDR = 0x10
 		CMD_RSP = 0x80
-		print(hex(self.hashCode))
+		#print(hex(self.hashCode))
 		#DATA Format
 		#Send: 	  <'c'><hashval-int><array index-byte>
 		#Returns: <'c'><hashval-int><array index-byte><data-long>
@@ -44,13 +44,13 @@ class comppar:
 		
 		# Checksum
 		msg = [ADDR , CMD_RSP] + DATA
-		print msg
+		#print msg
 		CHECKSUM = sum(msg) & 0xff
 		CKSUM1 = (((CHECKSUM >> 4) & 0xf) + 0x30) #MSB + 0x30
-		CKSUM2 = ((CHECKSUM & 0xff) + 0x30) #LSB + 0x30
-		print CHECKSUM
-		print CKSUM1
-		print CKSUM2
+		CKSUM2 = ((CHECKSUM & 0xf) + 0x30) #LSB + 0x30
+		#print CHECKSUM
+		#print CKSUM1
+		#print CKSUM2
 		
 		#send request messages
 		sobj.write(chr(STX)) #0
@@ -76,11 +76,45 @@ class comppar:
 		
 		#receive response
 		line = sobj.readline()
-		print line
-		#convert to a value
-		lValue = st.unpack_from('>L',(line[7:11]))[0]
-		#lValue = long(line(8:12))
+		#print "line received"
+		#print line
+		#print len(line)
+		rSTX = ord(line[0])
+		rADDR = ord(line[1])
+		rCMD_RSP = ord(line[3])
+		rCKSUM1 = ord(line[-2])
+		rCKSUM2 = ord(line[-1])
+		rDATA = line[4:-2]
+		#print "received data"
+		#print rDATA
+		#print len(rDATA)
+		
+		#look for escaped characters
+		line0 = ""
+		i=0
+		while i < (len(line)):
 			
+			if ord(line[i]) == 0x07: #escaped character
+				if ord(line[i+1]) == 0x30:
+					line0+=(chr(0x02))
+					#i=i+1
+				elif ord(line[i+1]) == 0x31:
+					line0+=(chr(0x0d))
+					#i=i+1	
+				elif ord(line[i+1]) == 0x32:
+					line0+=(chr(0x07))
+					#i=i+1
+				i=i+1
+			else:
+				line0+=(line[i])
+			
+			i=i+1
+		
+		
+				
+		#convert to a value
+		lValue = st.unpack_from('>L',(line0[7:11]))[0]
+					
 		#update value in self
 		self.val = float(lValue) * self.mult
 		
@@ -130,7 +164,7 @@ class compressor:
 			for i in self.parIndex[self.channels[ch]]:
 				self.par[i].updateVal(self.ser)
 				fields[a] = "field" + str(a+1)
-				print(self.par[i].getName() + str(self.par[i].getVal()))
+				print(self.par[i].getName() + " " + str(self.par[i].getVal()))
 				dParams[fields[a]] = self.par[i].getVal()
 				a=a+1
 			
@@ -161,15 +195,15 @@ class heliummonitor:
 		self.ser = serial.Serial(serStr, 9600, timeout=1) #set timeout to 5 seconds
 		
 	def updateStatus(self):
-		print('sending line')
+		
 		self.ser.write('W\r\n') #query helium monitor
-		print('reading')
+		
 		line = self.ser.readline()
 		line = self.ser.readline()
 		#assert (len(line)==2)
 		#line = ['\r\n', 'E508x parameter list\tHelium1 level mm 1287\tHelium2 level mm 1272\tTemperature sensor1 k 3.36\tTemperature sensor2 k 1.00\tAtmospheric pressure mB 1028.0\tHelium pressure mB 1040.0\tGas Heater On ratio 0.5549\tHelium gas flow cc/hr     0\tHelium liquid boil off cc/hr  0.0\tFirmware version 6.0 June 2007 \tFor PCB P211000117 issue 1.0  \tEnd\n']
-		print(line)
-		print("line")
+		
+		
 		if line:
 			
 			data = line.split()
