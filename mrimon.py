@@ -49,7 +49,7 @@ class comppar:
 		# Checksum
 		msg = [ADDR , CMD_RSP] + DATA
 		CHECKSUM = sum(msg) & 0xff
-		CKSUM1 = (((CHECKSUM >> 8) & 0xff) + 0x30) #MSB + 0x30
+		CKSUM1 = (((CHECKSUM >> 4) & 0xff) + 0x30) #MSB + 0x30
 		CKSUM2 = ((CHECKSUM & 0xff) + 0x30) #LSB + 0x30
 		
 		#send request messages
