@@ -22,10 +22,6 @@ def main():
 	
     STX = 0x02
     ADDR = 0x10
-#	CMD = bitstring.BitArray('0x8')
-#	RSP = bitstring.BitArray('0x0')
-#	CMD_RSP = CMD.copy()
-#	CMD_RSP.append(RSP)
     CMD_RSP = 0x80
 	# DATA Format
 	# Send: <'c'><hashval-int><array index-byte>
@@ -47,13 +43,13 @@ def main():
     print CHECKSUM
     print CKSUM1
     print CKSUM2
-
-    
-    
+  
+    # Send Message
     ser.write(chr(STX))
     ser.write(chr(ADDR))
     ser.write(chr(CMD_RSP))
     
+	# Escape characters if necessary
     for d in DATA:
 	if d == 0x02:
 		ser.write(chr(0x07))
@@ -67,10 +63,7 @@ def main():
 	else:
 		ser.write(chr(d))
 
-    #ser.write(chr(DATA[0]))
-    #ser.write(chr(DATA[1]))
-    #ser.write(chr(DATA[2]))
-    #ser.write(chr(DATA[3]))
+
     ser.write(chr(CKSUM1))
     ser.write(chr(CKSUM2))
     ser.write('\r')

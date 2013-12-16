@@ -31,10 +31,6 @@ class comppar:
 		# format: <STX><ADDR><CMD_RSP>[<DATA>...]<CKSUM1><CKSUM2><CR>
 		STX = 0x02
 		ADDR = 0x10
-		#CMD = bitstring.BitArray('0x8')
-		#RSP = bitstring.BitArray('0x0')
-		#CMD_RSP = CMD.copy()
-		#CMD_RSP.append(RSP)
 		CMD_RSP = 0x80
 		print(hex(self.hashCode))
 		#DATA Format
@@ -60,10 +56,20 @@ class comppar:
 		sobj.write(chr(STX)) #0
 		sobj.write(chr(ADDR)) #1
 		sobj.write(chr(CMD_RSP)) #2
-		sobj.write(chr(DATA[0])) #3
-		sobj.write(chr(DATA[1])) #4
-		sobj.write(chr(DATA[2])) #5
-		sobj.write(chr(DATA[3])) #6
+		
+		for d in DATA: # Four bytes, escape characters if necessary
+			if d == 0x02:
+				sobj.write(chr(0x07))
+				sobj.write(chr(0x30))
+			elif d == 0x0d:
+				sobj.write(chr(0x07))
+				sobj.write(chr(0x31))
+			elif d == 0x07:
+				sobj.write(chr(0x07))
+				sobj.write(chr(0x32))
+			else:
+				sobj.write(chr(d))
+		
 		sobj.write(chr(CKSUM1)) #7
 		sobj.write(chr(CKSUM2)) #8
 		sobj.write('\r') #9
