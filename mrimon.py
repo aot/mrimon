@@ -49,8 +49,8 @@ class comppar:
 		# Checksum
 		msg = [ADDR , CMD_RSP] + DATA
 		CHECKSUM = sum(msg) & 0xff
-		CKSUM1 = (((CHECKSUM >> 8) & 0xff) + 0x30) & 0xff #MSB + 0x30
-		CKSUM2 = ((CHECKSUM & 0xff) + 0x30) & 0xff #LSB + 0x30
+		CKSUM1 = (((CHECKSUM >> 8) & 0xff) + 0x30) #MSB + 0x30
+		CKSUM2 = ((CHECKSUM & 0xff) + 0x30) #LSB + 0x30
 		
 		#send request messages
 		sobj.write(chr(STX)) #0
@@ -98,7 +98,7 @@ class compressor:
 		self.par[8] = comppar('Pressure Sensor Error', 0xf82b,0,1) # pressure sensor error
 		self.par[9] = comppar('Error Code Status', 0x65a4,0,1) # error code status
 		
-		self.ser = serial.Serial(serStr, 115200,timeout=2) #set timeout to 5 seconds
+		self.ser = serial.Serial(serStr, 115200,timeout=1) #set timeout to 5 seconds
 		self.parIndex = {}
 		self.channels = ['temp', 'pressure', 'status']
 		self.parIndex['temp'] = [1,2,3,4]
